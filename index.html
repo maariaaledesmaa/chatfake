@@ -388,7 +388,7 @@ else if(r){e.preventDefault();const c=S.h.find(z=>z.id==r.dataset.c);menu(e,[['�
 let mp,lpT=0;document.addEventListener('mousedown',e=>{const el=e.target.closest('.m');if(e.button||!el)return;mp=setTimeout(()=>{lpT=1;el.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:e.clientX,clientY:e.clientY}))},600)});document.addEventListener('mouseup',()=>{clearTimeout(mp);setTimeout(()=>lpT=0,120)});
 let lp;document.addEventListener('touchstart',e=>{const t=e.touches[0],el=e.target;lp=setTimeout(()=>el.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:t.clientX,clientY:t.clientY})),550)},{passive:true});['touchend','touchmove','touchcancel'].forEach(n=>document.addEventListener(n,()=>clearTimeout(lp),{passive:true}));
 /* ===== BACKUP PRIVADO (Supabase) — solo para ti, no afecta a exportar/importar ===== */
-const BK_URL='https://TU-PROYECTO.supabase.co',BK_KEY='TU_CLAVE_PUBLICA';
+const BK_URL='https://buyzbabtrrxsbcqqqvjo.supabase.co',BK_KEY='sb_publishable_8S9U-9XLbP4qIghuJgz1hQ_rMpfPKr6';
 let bkPin='';
 const bkL=()=>{try{return JSON.parse(localStorage.getItem('cf-bk'))||{}}catch(e){return{}}},bkSetL=o=>{try{localStorage.setItem('cf-bk',JSON.stringify(o))}catch(e){}};
 const bkDev=()=>{let v='';try{v=localStorage.getItem('cf-bk-dev')||''}catch(e){}return v||(matchMedia('(pointer:coarse)').matches?'Móvil':'Ordenador')};
