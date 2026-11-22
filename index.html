@@ -241,6 +241,15 @@ body.dk .mb textarea{background:#2a2e35;border-color:#ffffff12;color:#fff}
 .mvr{display:flex;gap:8px}.mvr .btn{flex:1;text-align:center;padding:10px 6px}.pvim{max-width:100%;max-height:120px;object-fit:cover;border-radius:10px;align-self:flex-start}
 #tools button.on{background:#0a84ff;color:#fff;border-color:#0a84ff}
 .gh{display:flex;gap:8px;justify-content:center}.stk{position:relative;isolation:isolate;margin-bottom:14px}.stk::before,.stk::after{content:'';position:absolute;border-radius:22px;z-index:-1}.stk::before{inset:10px 12px -7px;background:rgba(236,236,241,.55)}.stk::after{inset:18px 24px -14px;background:rgba(236,236,241,.34)}
+.ta{background:#0a84ff;color:#fff;border-radius:8px;padding:6px 12px;margin-left:10px}
+#capop{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.35);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:64px 24px 36px;animation:cpf .2s}
+@keyframes cpf{from{opacity:0}}
+.cpc{display:flex;flex-direction:column;align-items:center;gap:10px;max-width:100%;min-height:0}
+.cpc img{max-width:100%;max-height:66vh;border-radius:18px;box-shadow:0 14px 40px #0008;background:#fff}
+.cpc small{color:#fff;opacity:.85;font-size:13px;text-align:center}
+.cpx{position:absolute;top:max(env(safe-area-inset-top),16px);right:16px;width:40px;height:40px;border-radius:50%;background:rgba(60,60,67,.6);color:#fff;font-size:18px;border:0;cursor:pointer}
+.cps{display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:0;color:#fff;font-size:12px;cursor:pointer}
+.cps i{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center}.cps svg{width:28px;height:28px}
 </style></head><body>
 <div id=tools></div><button id=mb data-a=mb>☰</button><div id=phone><div id=screen></div></div><div id=picker></div>
 <input type=file id=fi accept="image/*" hidden><input type=file id=fj accept=".json" hidden><input type=file id=fp accept="image/*" hidden><input type=file id=fic accept="image/png,image/webp,image/jpeg" multiple hidden>
@@ -389,12 +398,27 @@ function newDM(){const p=P(),m=me(p.id);modal('Nuevo chat individual',`<label>Pe
 function newGroup(){const p=P(),m=me(p.id);modal('Nuevo grupo',`<label>Nombre del grupo<input id=g1></label><label>Foto del grupo<input type=file id=g5 accept=image/*></label><label>Contactos</label>${ctl(p).map(i=>ch(i)).map(c=>`<label class=ck><input type=checkbox class=gc value=${c.id}> ${h(N(c.id))}</label>`).join('')||'<small>Aún no hay personajes</small>'}`,async()=>{const ids=[...document.querySelectorAll('.gc:checked')].map(e=>e.value),nw=[];if(!ids.length&&!nw.length)return;nw.forEach(n=>{const c=newChar(n);ids.push(c.id);dm(m,c)});const x={id:id(),g:1,img:$('#g5').files[0]?await crop($('#g5').files[0],SQ):null,n:$('#g1').value.trim()||'Grupo',m:[m.id,...ids],s:[],t:Date.now()};S.h.push(x);ui.cid=x.id;ui.snd=m.id;ui.scr='chat';ui.tab='g';commit()})}
 function settings(){const p=P();modal('Ajustes de '+h(p.n),`<label>Nombre<input id=a1 value="${h(p.n)}"></label><label>App de mensajería por defecto<select id=a2><option value=ios ${p.v=='ios'?'selected':''}>iMessage</option><option value=wa ${p.v=='wa'?'selected':''}>WhatsApp</option></select></label><label class=ck><input type=checkbox id=a3 ${p.dk?'checked':''}> Modo oscuro</label><label>Color de burbujas enviadas<input type=color id=a4 value="${p.bub||'#0a84ff'}"></label><label class=ck><input type=checkbox id=a5 ${p.bub?'':'checked'}> Color por defecto</label><label>Fondo del chat (imagen, WhatsApp)<input type=file id=a6 accept=image/*></label><label>Fondo de pantalla de bloqueo<input type=file id=a7 accept=image/*></label><label>Fondo de pantalla de inicio (por defecto, el de bloqueo)<input type=file id=aa accept=image/*></label><label>Tu foto de perfil<input type=file id=a9 accept=image/*></label><label class=ck><input type=checkbox id=a8> Quitar fondos personalizados</label><button class=btn data-a=dp>🗑 Eliminar este perfil</button>`,async()=>{p.n=$('#a1').value.trim()||p.n;me(p.id).n=p.n;p.v=$('#a2').value;p.dk=$('#a3').checked;p.bub=$('#a5').checked?null:$('#a4').value;if($('#a8').checked){p.wi=p.lw=p.hw=null}if($('#a9').files[0]){const im=await crop($('#a9').files[0],SQ);if(im)me(p.id).img=im}if($('#a6').files[0])p.wi=await rd($('#a6').files[0],900);if($('#a7').files[0])p.lw=await rd($('#a7').files[0],1000);if($('#aa').files[0])p.hw=await rd($('#aa').files[0],1000);commit()})}
 
+const isMob=()=>innerWidth<=760||matchMedia('(pointer:coarse)').matches;
+let POPB=null;
+async function gal(b){const file=new File([b],'captura-'+Date.now()+'.png',{type:'image/png'});
+if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return 'ok'}catch(e){return e.name=='AbortError'?'abort':'err'}}
+if(/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform=='MacIntel'&&navigator.maxTouchPoints>1))return 'ios';
+const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=file.name;document.body.append(a);a.click();a.remove();return 'ok'}
+function showPop(b,info){$('#capop')?.remove();const u=URL.createObjectURL(b),d=document.createElement('div');d.id='capop';
+d.innerHTML='<button class=cpx aria-label="Cerrar">✕</button><div class=cpc><img alt="Captura"><small></small></div><button class=cps aria-label="Guardar en la galería"><i><svg viewBox="0 0 24 24" fill=none stroke=#fff stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M12 3v12M7 11l5 5 5-5M5 20h14"/></svg></i><span>Guardar en la galería</span></button>';
+d.querySelector('img').src=u;d.querySelector('small').textContent=info||'';
+const close=()=>{d.remove();URL.revokeObjectURL(u)};
+d.onclick=e=>{if(e.target===d)close()};d.querySelector('.cpx').onclick=close;
+d.querySelector('.cps').onclick=async()=>{const g=await gal(b);if(g=='abort')return;if(g=='ok')return close();toast('Mantén pulsada la imagen y elige «Añadir a Fotos» o «Guardar imagen»')};
+document.body.append(d)}
+function toastAct(t,l,fn){const e=document.createElement('div');e.className='ts';e.style.bottom='84px';const sp=document.createElement('span');sp.textContent=t;const bt=document.createElement('button');bt.className='ta';bt.textContent=l;bt.onclick=async()=>{e.remove();const g=await fn();if(g=='dl')toast('Captura descargada: búscala en Galería o Descargas')};e.append(sp,bt);document.body.append(e);setTimeout(()=>e.remove(),12000)}
 async function snap(){const w=ui.ro;if(w){ui.ro=false;render();await new Promise(r=>setTimeout(r,60))}try{await snap0()}finally{if(w){ui.ro=true;render()}}}
 async function snap0(){document.body.classList.remove('op');if(innerWidth<=760)await new Promise(r=>setTimeout(r,350));const lk=['lock','home','call'].includes(ui.scr),el=lk?$('#screen'):($('#cap')||$('#app')),msg=[];
 try{const cv=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:null}),b=await new Promise(r=>cv.toBlob(r));
 try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);msg.push('copiada al portapapeles')}catch(e){msg.push('no se pudo copiar (usa Chrome/Edge/Opera)')}
+if(isMob())POPB=b;
 if(dirH){try{if(await dirH.queryPermission({mode:'readwrite'})!='granted')await dirH.requestPermission({mode:'readwrite'});const w=await(await dirH.getFileHandle('captura-'+Date.now()+'.png',{create:true})).createWritable();await w.write(b);await w.close();msg.push('guardada en '+dirH.name)}catch(e){msg.push('error al guardar en la carpeta')}}}
-catch(e){msg.push('error al capturar (¿hay internet para cargar html2canvas?)')}toast('Captura: '+msg.join(' · '))}
+catch(e){msg.push('error al capturar (¿hay internet para cargar html2canvas?)')}if(POPB){showPop(POPB,msg.join(' · '));POPB=null}else toast('Captura: '+msg.join(' · '))}
 async function pickDir(){try{dirH=await showDirectoryPicker({mode:'readwrite'});await idb('put','d',dirH);toast('Capturas se guardarán en: '+dirH.name)}catch(e){toast('No se eligió carpeta (¿navegador compatible?)')}tools()}
 function exp(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='chatfake-backup.json';a.click()}
 
