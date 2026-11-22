@@ -277,9 +277,11 @@ body.dk .epc{background:#1f2227;color:#fff}body.dk .eph input{background:#2a2e35
 .pvh{flex:none;display:flex;justify-content:space-between;align-items:center;padding:4px 12px 6px;background:var(--bg)}
 .pvh .bk{width:70px;text-align:left}.pvh .tb{width:70px;text-align:right}
 .pvt{text-align:center;line-height:1.2}.pvt b{display:block;font-size:15px}.pvt small{font-size:11px;color:var(--sub)}
-.pvb{flex:1;min-height:0;position:relative;background:var(--bg)}.pvb img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.pvb{flex:1;min-height:0;background-color:var(--bg);background-size:contain;background-repeat:no-repeat;background-position:center}
 .pvf{flex:none;display:flex;justify-content:space-around;align-items:center;padding:10px 0 36px;background:var(--bg)}
 .pvf button{background:none;color:#0a84ff;width:48px;height:38px;display:flex;align-items:center;justify-content:center}.pvf svg{width:25px;height:25px}
+.bnw{position:absolute;top:32px;left:0;width:100%;padding:18px 8px 26px;z-index:60;pointer-events:none}.bnw .bn{pointer-events:none;transition:none}
+.cpc video{max-width:100%;max-height:66vh;border-radius:18px;box-shadow:0 14px 40px #0008;background:#000}
 </style></head><body>
 <div id=tools></div><button id=mb data-a=mb>☰</button><div id=phone><div id=screen></div></div><div id=picker></div>
 <input type=file id=fi accept="image/*" hidden><input type=file id=fj accept=".json" hidden><input type=file id=fp accept="image/*" hidden><input type=file id=fic accept="image/png,image/webp,image/jpeg" multiple hidden><input type=file id=ff accept="image/*" hidden>
@@ -335,8 +337,8 @@ function newNotif(){const p=P(),co=pid=>{const q=S.p.find(x=>x.id==pid);return q
 ico=pid=>Object.entries(APPS).map(([k,v])=>`<option value=${k}>${v[0]}</option>`).join('')+(co(pid)?`<optgroup label="Contactos de este móvil">${co(pid)}</optgroup>`:''),
 pv=()=>{const v=$('#n1').value,pid=$('#n6').value,e=$('#npv');if(v.startsWith('c:')){const im=cn(ch(v.slice(2)),pid).img;e.style.cssText=im?`background:url('${im}') center/cover;border-radius:50%`:'background:#25d366;color:#fff';e.textContent=im?'':'✆'}else{const a=APPS[v],x=IB(FNN[v],a);e.style.cssText=x[0];e.textContent=x[1]}},
 fill=()=>{const v=$('#n1').value;if(v.startsWith('c:'))$('#n3').value=cn(ch(v.slice(2)),$('#n6').value).n};
-modal('Crear notificación',`<label>Icono (aplicación o contacto)<div class=npr><i id=npv class=ai></i><select id=n1>${ico(p.id)}</select></div></label><label>O usa tu propia imagen como icono<input type=file id=n2 accept=image/*></label><label>Título<input id=n3 placeholder="Nombre del contacto o app"></label><label>Mensaje<input id=n4></label><label>Hora (vacío = ahora)<input type=time id=n5></label><label class=ck><input type=checkbox id=n7> Mostrar como notificación emergente (banner arriba hasta cerrarla)</label><label>Aparece en el móvil de<select id=n6>${S.p.map(q=>`<option value=${q.id} ${q.id==p.id?'selected':''}>${h(q.n)}</option>`).join('')}</select></label>`,async()=>{const bn=$('#n7').checked,k=$('#n1').value,pid=$('#n6').value,c=k.startsWith('c:')?ch(k.slice(2)):null,cc=c?cn(c,pid):null,t=$('#n3').value.trim(),x=$('#n4').value.trim();if(!t&&!x)return;const f=$('#n2').files[0],own=f?await crop(f,{r:1,max:200}):null,img=own||(cc&&cc.img)||null,tm=$('#n5').value;let ts=Date.now();if(tm){const d=new Date,[a,b]=tm.split(':');d.setHours(+a,+b,0,0);ts=+d}S.n.push({id:id(),pid,ti:t||(cc?cc.n:APPS[k][0]),x,t:ts,app:c?'wa':k,img,av:!own&&cc&&cc.img?1:0,f:c?c.id:undefined,bn});commit()});
-$('#n1').onchange=()=>{fill();pv()};$('#n6').onchange=()=>{const v=$('#n1').value,pid=$('#n6').value;$('#n1').innerHTML=ico(pid);if([...$('#n1').options].some(o=>o.value==v))$('#n1').value=v;fill();pv()};pv()}
+modal('Crear notificación',`<label>Icono (aplicación o contacto)<div class=npr><i id=npv class=ai></i><select id=n1>${ico(p.id)}</select></div></label><label>O usa tu propia imagen como icono<input type=file id=n2 accept=image/*></label><label>Título<input id=n3 placeholder="Nombre del contacto o app"></label><label>Mensaje<input id=n4></label><label>Hora (vacío = ahora)<input type=time id=n5></label><label class=ck><input type=checkbox id=n7> Mostrar como notificación emergente (banner arriba hasta cerrarla)</label><label class=ck><input type=checkbox id=n8> 🎬 Llegada realista y grabar vídeo</label><label id=n9w style="display:none">Segundos que se queda visible<input type=number id=n9 min=2 max=10 step=.5 value=4></label><label>Aparece en el móvil de<select id=n6>${S.p.map(q=>`<option value=${q.id} ${q.id==p.id?'selected':''}>${h(q.n)}</option>`).join('')}</select></label>`,async()=>{const bn=$('#n7').checked,vid=$('#n8').checked,k=$('#n1').value,pid=vid?p.id:$('#n6').value,c=k.startsWith('c:')?ch(k.slice(2)):null,cc=c?cn(c,pid):null,t=$('#n3').value.trim(),x=$('#n4').value.trim();if(!t&&!x)return;const f=$('#n2').files[0],own=f?await crop(f,{r:1,max:200}):null,img=own||(cc&&cc.img)||null,tm=$('#n5').value;let ts=Date.now();if(tm){const d=new Date,[a,b]=tm.split(':');d.setHours(+a,+b,0,0);ts=+d}const nn={id:id(),pid,ti:t||(cc?cc.n:APPS[k][0]),x,t:ts,app:c?'wa':k,img,av:!own&&cc&&cc.img?1:0,f:c?c.id:undefined,bn:vid?false:bn};if(vid){const sc=+$('#n9').value||4;$('#md')?.remove();recNotif(nn,sc);return}S.n.push(nn);commit()});
+$('#n1').onchange=()=>{fill();pv()};$('#n6').onchange=()=>{const v=$('#n1').value,pid=$('#n6').value;$('#n1').innerHTML=ico(pid);if([...$('#n1').options].some(o=>o.value==v))$('#n1').value=v;fill();pv()};pv();$('#n8').onchange=()=>{const on=$('#n8').checked;$('#n9w').style.display=on?'':'none';$('#n7').disabled=on;if(on)$('#n7').checked=false;$('#n6').disabled=on;if(on){$('#n6').value=p.id;$('#n6').dispatchEvent(new Event('change'))}const b=document.querySelector('#md .pr');if(b)b.textContent=on?'Generar y grabar':'Aceptar'}}
 function crop(f,o={}){return new Promise(res=>{const fr=new FileReader;fr.onload=()=>{const im=new Image;im.onload=()=>{
 let ar=o.r||im.width/im.height,z=1,ox=0,oy=0,W,H,s,s0;const AS=o.free?[['Original',0],['1:1',1],['4:5',.8],['16:9',16/9],['9:16',9/16]]:null;
 const d=document.createElement('div');d.id='cr';d.innerHTML=`<div class=mb><h3>Recortar imagen</h3><small>Arrastra para encuadrar y usa el zoom para acercar.</small>${AS?`<div class=ar>${AS.map((a,i)=>`<button data-i=${i} class="${i?'':'on'}">${a[0]}</button>`).join('')}</div>`:''}<div class=cw><canvas id=cc></canvas></div><input type=range id=cz min=1 max=4 step=.01 value=1><div class=ac><button class=btn id=cx>Cancelar</button><button class="btn pr" id=co>Aplicar</button></div></div>`;document.body.append(d);
@@ -456,8 +458,61 @@ HRT=f=>`<svg viewBox="0 0 24 24" fill="${f?'#ff3b30':'none'}" stroke="${f?'#ff3b
 function photos(p){
  if(!p.ph)return `<div class=hd><b class=ht>Fotos</b></div><div class=pe>${PHI.replaceAll('46px','84px')}<h3>Añade una foto</h3><small>La editarás antes de verla en la galería</small><button class=pbt data-a=phc>📋 Pegar del portapapeles</button><button class="pbt s" data-a=phf2>${isMob()?'🖼 Elegir de la galería':'📁 Elegir de los archivos'}</button></div><div class=tabs><span class=on><b>▦</b>Biblioteca</span><span><b>♡</b>Para ti</span><span><b>▭</b>Álbumes</span><span><b>⌕</b>Buscar</span></div>`;
  const d=new Date(p.pht||Date.now());
- return `<div class=pvh><button class=bk data-a=phb>‹</button><div class=pvt><b>${dl(d)}</b><small>${hh(d)}</small></div><button class=tb data-a=phe>Editar</button></div><div class=pvb><img src="${p.ph}"></div><div class=pvf><button data-a=nop>${SHR}</button><button data-a=phh>${HRT(p.phf)}</button><button data-a=nop>${INF}</button><button data-a=phd>${TRS}</button></div>`}
+ return `<div class=pvh><button class=bk data-a=phb>‹</button><div class=pvt><b>${dl(d)}</b><small>${hh(d)}</small></div><button class=tb data-a=phe>Editar</button></div><div class=pvb style="background-image:url('${p.ph}')"></div><div class=pvf><button data-a=nop>${SHR}</button><button data-a=phh>${HRT(p.phf)}</button><button data-a=nop>${INF}</button><button data-a=phd>${TRS}</button></div>`}
 async function phEdit(f){const im=await crop(f,{free:1,max:1400});if(!im)return;const p=P();if(!p.ph||!p.pht)p.pht=Date.now();p.ph=im;ui.scr='photos';commit()}
+
+/* ===== notificación realista + grabación de vídeo ===== */
+const vOnclone=d=>d.querySelectorAll('.bn').forEach(b=>{b.style.animation='none';b.style.transition='none'});
+async function vgal(b,ext){const f=new File([b],'notificacion-'+Date.now()+'.'+ext,{type:b.type||'video/'+ext});
+ if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return'ok'}catch(e){return e.name=='AbortError'?'abort':'err'}}
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=f.name;document.body.append(a);a.click();a.remove();return'ok'}
+function showVidPop(b,ext,info){$('#capop')?.remove();const u=URL.createObjectURL(b),d=document.createElement('div');d.id='capop';
+ d.innerHTML='<button class=cpx aria-label="Cerrar">✕</button><div class=cpc><video controls autoplay loop muted playsinline></video><button class=cpb>⬇ Descargar vídeo</button><small></small></div>'+(isMob()?'<button class=cps aria-label="Guardar en la galería"><i><svg viewBox="0 0 24 24" fill=none stroke=#fff stroke-width=2 stroke-linecap=round stroke-linejoin=round><path d="M12 3v12M7 11l5 5 5-5M5 20h14"/></svg></i><span>Guardar en la galería</span></button>':'');
+ d.querySelector('video').src=u;d.querySelector('small').textContent=info||'';
+ const bt=d.querySelector('.cpb');bt.onclick=()=>{const a=document.createElement('a');a.href=u;a.download='notificacion-'+Date.now()+'.'+ext;document.body.append(a);a.click();a.remove();bt.textContent='✓ Descargado';bt.classList.add('ok')};
+ const close=()=>{d.remove();URL.revokeObjectURL(u)};d.onclick=e=>{if(e.target===d)close()};d.querySelector('.cpx').onclick=close;
+ const sv=d.querySelector('.cps');if(sv)sv.onclick=async()=>{const g=await vgal(b,ext);if(g=='abort')return;if(g=='ok')return close();toast('Mantén pulsado el vídeo y elige «Guardar»')};
+ document.body.append(d)}
+async function recNotif(n,sec){
+ if(ui.rec)return;
+ if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){toast('Este navegador no permite grabar vídeo (prueba Chrome, Edge o un Safari reciente)');return}
+ const p=P(),sc=$('#screen'),K=2;let wr=null;ui.rec=1;
+ try{
+  toast('Preparando grabación…');await new Promise(r=>setTimeout(r,120));
+  wr=document.createElement('div');wr.className='bnw';wr.style.visibility='hidden';
+  wr.innerHTML=`<div class=bn>${nic(n,p)}<div><b>${h(n.ti)}</b><span>${h(n.x)}</span></div><small>ahora</small></div>`;sc.append(wr);
+  const bg=await html2canvas(sc,{scale:K,useCORS:true,backgroundColor:null,onclone:vOnclone});
+  const bc=await html2canvas(wr,{scale:K,useCORS:true,backgroundColor:null,onclone:d=>{const e=d.querySelector('.bnw');if(e)e.style.visibility='visible'}});
+  const sr=sc.getBoundingClientRect(),br=wr.getBoundingClientRect(),wx=br.left-sr.left,wy=br.top-sr.top,ww=br.width,wh=br.height;
+  const cw=bg.width&~1,chh=bg.height&~1,cv=document.createElement('canvas');cv.width=cw;cv.height=chh;const g=cv.getContext('2d');
+  const T={pre:2,ar:.65,hold:Math.min(10,Math.max(2,sec)),ex:.4,post:2};T.tot=T.pre+T.ar+T.hold+T.ex+T.post;
+  const spring=u=>u>=1?1:1-Math.exp(-6.5*u)*Math.cos(11*u);
+  const st=t=>{const a1=T.pre+T.ar,e0=a1+T.hold,e1=e0+T.ex;
+   if(t<T.pre)return null;
+   if(t<a1){const u=(t-T.pre)/T.ar,q=spring(u);return{y:(1-q)*(8-wy),s:.5+.5*q,a:Math.min(1,(t-T.pre)/.12)}}
+   if(t<e0)return{y:0,s:1,a:1};
+   if(t<e1){const u=(t-e0)/T.ex,e=u*u;return{y:-e*(wy+wh+14),s:1-.06*e,a:1-e}}
+   return null};
+  wr.style.visibility='visible';wr.style.opacity='0';wr.style.transformOrigin='50% 0';
+  const draw=t=>{g.clearRect(0,0,cw,chh);g.drawImage(bg,0,0,cw,chh);const v=st(t);
+   if(v){g.save();g.globalAlpha=Math.max(0,Math.min(1,v.a));g.translate((wx+ww/2)*K,(wy+v.y)*K);g.scale(v.s,v.s);g.drawImage(bc,-bc.width/2,0);g.restore();wr.style.opacity=v.a;wr.style.transform=`translateY(${v.y}px) scale(${v.s})`}
+   else{wr.style.opacity='0'}};
+  draw(0);
+  const stream=cv.captureStream(30),types=['video/mp4;codecs=avc1.640028','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'],mt=types.find(x=>MediaRecorder.isTypeSupported(x))||'',
+   rec=new MediaRecorder(stream,mt?{mimeType:mt,videoBitsPerSecond:8e6}:{videoBitsPerSecond:8e6}),ch2=[];
+  rec.ondataavailable=e=>{if(e.data&&e.data.size)ch2.push(e.data)};
+  const stopped=new Promise(r=>rec.onstop=r);
+  rec.start(250);toast('Grabando… no toques nada');
+  const t0=performance.now();
+  await new Promise(res=>{const loop=()=>{const t=(performance.now()-t0)/1000;draw(t);if(t<T.tot)requestAnimationFrame(loop);else res()};loop()});
+  await new Promise(r=>setTimeout(r,200));rec.stop();await stopped;
+  const type=rec.mimeType||mt||'video/webm',ext=type.includes('mp4')?'mp4':'webm',blob=new Blob(ch2,{type});
+  wr.remove();wr=null;
+  let note=ext=='webm'?' · formato WebM (este navegador no graba MP4)':'';
+  if(dirH){try{if(await dirH.queryPermission({mode:'readwrite'})!='granted')await dirH.requestPermission({mode:'readwrite'});const w=await(await dirH.getFileHandle('notificacion-'+Date.now()+'.'+ext,{create:true})).createWritable();await w.write(blob);await w.close();note+=' · guardado en '+dirH.name}catch(e){note+=' · error al guardar en la carpeta'}}
+  showVidPop(blob,ext,Math.round(T.tot)+' s · '+ext.toUpperCase()+note);
+ }catch(e){console.error(e);toast('No se pudo grabar el vídeo (¿hay internet para cargar html2canvas?)')}
+ finally{if(wr)wr.remove();ui.rec=0}}
 
 function render(){const p=P();$('#phone').style.display=p?'':'none';$('#picker').style.display=p?'none':'';tools();if(!p)return picker();
 const sc=$('#screen');sc.className=`${['list','chat'].includes(ui.scr)?p.v:'ios'} ${p.dk?'dark':''} ${['lock','home','call'].includes(ui.scr)?'lk':''}`;sc.style.cssText=(p.bub?`--b:${p.bub};`:'')+`--bl:${(p.bat??100)/100}`;
@@ -489,8 +544,8 @@ d.querySelector('.cps').onclick=async()=>{const g=await gal(b);if(g=='abort')ret
 document.body.append(d)}
 function toastAct(t,l,fn){const e=document.createElement('div');e.className='ts';e.style.bottom='84px';const sp=document.createElement('span');sp.textContent=t;const bt=document.createElement('button');bt.className='ta';bt.textContent=l;bt.onclick=async()=>{e.remove();const g=await fn();if(g=='dl')toast('Captura descargada: búscala en Galería o Descargas')};e.append(sp,bt);document.body.append(e);setTimeout(()=>e.remove(),12000)}
 async function snap(){const w=ui.ro;if(w){ui.ro=false;render();await new Promise(r=>setTimeout(r,60))}try{await snap0()}finally{if(w){ui.ro=true;render()}}}
-async function snap0(){document.body.classList.remove('op');if(innerWidth<=760)await new Promise(r=>setTimeout(r,350));const lk=['lock','home','call'].includes(ui.scr),el=lk?$('#screen'):($('#cap')||$('#app')),msg=[];let rst=null;const bnE=$('#bnr');if(bnE&&!lk&&el){const ps=el.style.position;el.style.position='relative';bnE.style.top='8px';el.append(bnE);rst=()=>{el.style.position=ps;bnE.style.top='';$('#screen').append(bnE)}}
-try{const cv=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:null}),b=await new Promise(r=>cv.toBlob(r));
+async function snap0(){document.body.classList.remove('op');if(innerWidth<=760)await new Promise(r=>setTimeout(r,350));const lk=['lock','home','call'].includes(ui.scr),el=lk?$('#screen'):($('#cap')||$('#app')),msg=[];let rst=null;const bnE=$('#bnr');if(bnE&&!lk&&el){bnE.querySelectorAll('.bn').forEach(b=>{b.classList.remove('in');b.style.animation='none'});const rb=bnE.getBoundingClientRect(),re=el.getBoundingClientRect(),ps=el.style.position;el.style.position='relative';bnE.style.cssText=`top:${rb.top-re.top}px;left:${rb.left-re.left}px;right:auto;width:${rb.width}px`;el.append(bnE);rst=()=>{el.style.position=ps;bnE.style.cssText='';$('#screen').append(bnE)}}
+try{const cv=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:null,onclone:vOnclone}),b=await new Promise(r=>cv.toBlob(r));
 if(!isMob()){try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);msg.push('copiada al portapapeles')}catch(e){msg.push('no se pudo copiar (usa Chrome/Edge/Opera)')}}
 if(isMob())POPB=b;
 if(dirH){try{if(await dirH.queryPermission({mode:'readwrite'})!='granted')await dirH.requestPermission({mode:'readwrite'});const w=await(await dirH.getFileHandle('captura-'+Date.now()+'.png',{create:true})).createWritable();await w.write(b);await w.close();msg.push('guardada en '+dirH.name)}catch(e){msg.push('error al guardar en la carpeta')}}}
