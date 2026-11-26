@@ -525,7 +525,7 @@ const xacc=i=>X().a.find(a=>a.id==i);
 const xdt=t=>{const d=new Date(t),z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${z(d.getHours())}:${z(d.getMinutes())}`};
 const xn=n=>{n=+n||0;if(n<1e3)return n?String(n):'';if(n<1e6)return (n/1e3).toFixed(n<1e5?1:0).replace('.',',').replace(',0','')+' mil';return (n/1e6).toFixed(1).replace('.',',').replace(',0','')+' M'};
 const xtm=t=>{const d=Date.now()-t,x=new Date(t),n=new Date;if(d<6e4)return Math.max(1,Math.round(d/1e3))+' s';if(d<36e5)return Math.round(d/6e4)+' min';if(d<864e5)return Math.round(d/36e5)+' h';const m=x.toLocaleDateString('es-ES',{day:'numeric',month:'short'}).replace('.','');return x.getFullYear()==n.getFullYear()?m:m+' '+x.getFullYear()};
-const xtx=t=>h(t||'').replace(/(#[\p{L}\p{N}_]+|@[\p{L}\p{N}_]+|https?:\/\/[^\s<]+)/gu,'<i class=xl>$1</i>');
+const xtx=t=>h(t||'').replace(/(#[\p{L}\p{N}_]+|@[\p{L}\p{N}_]+(?:\.[\p{L}\p{N}_]+)*|https?:\/\/[^\s<]+)/gu,'<i class=xl>$1</i>');
 const xgo=(v,pr)=>{(ui.xh=ui.xh||[]).push([ui.xv||'home',ui.xp,ui.xdm]);ui.xv=v;Object.assign(ui,pr||{})};
 const xback=()=>{const o=(ui.xh||[]).pop();if(o){ui.xv=o[0];ui.xp=o[1];ui.xdm=o[2]}else ui.xv='home'};
 const xdraft=(k,fn)=>{if(ui.xdk!=k){ui.xdk=k;ui.xd=fn()}return ui.xd};
@@ -574,7 +574,7 @@ tabp:()=>{ui.xt='p'},tabf:()=>{ui.xt='f'},ptab:i=>{ui.xpt=i},back:()=>{ui.xdk=nu
 comp:()=>{ui.xdk=null;xgo('comp')},cav:()=>{ui.xf='av';$('#fx').multiple=false;$('#fx').click()},chd:()=>{ui.xf='hd';$('#fx').multiple=false;$('#fx').click()},aim:()=>{ui.xf='im';$('#fx').multiple=true;$('#fx').click()},
 rmim:i=>{ui.xd.im.splice(+i,1)},menu:i=>{ui.xm=i;ui.xan='sh'},na:()=>{ui.xdk=null;ui.xdr=false;ui.xsw=false;xgo('set')},dsel:i=>{const s=ui.xd.sel,k=s.indexOf(i);k<0?s.push(i):s.splice(k,1)},
 acc:(i,p)=>{p.xa=i;ui.xdr=false;ui.xsw=false;ui.xv='home';ui.xh=[];save()},
-mkacc:(i,p)=>{const d=ui.xd,X_=X(),un=(d.un||'').trim().replace(/^@/,'');if(!(d.dn||'').trim())return toast('Escribe un nombre');if(!/^\w{1,15}$/.test(un))return toast('El nombre de usuario solo admite letras, números y _ (máx. 15)');if(X_.a.some(z=>z.un.toLowerCase()==un.toLowerCase()))return toast('Ese nombre de usuario ya está en uso');
+mkacc:(i,p)=>{const d=ui.xd,X_=X(),un=(d.un||'').trim().replace(/^@/,'');if(!(d.dn||'').trim())return toast('Escribe un nombre');if(!/^[\w.]{1,15}$/.test(un))return toast('El nombre de usuario solo admite letras, números, _ y . (máx. 15)');if(X_.a.some(z=>z.un.toLowerCase()==un.toLowerCase()))return toast('Ese nombre de usuario ya está en uso');
 const a={id:id(),pid:p.id,dn:d.dn.trim(),un,img:d.img||null,hd:null,bio:'',web:'',loc:'',jn:Date.now(),fo:0,fg:0,ver:false,priv:false,bell:[],fl:[]};X_.a.push(a);p.xa=a.id;ui.xdk=null;ui.xh=[];ui.xv='home';ui.xpop=a.id;save()},
 pub:(i,p,a)=>{const d=ui.xd,X_=X();if(!(d.x||'').trim()&&!(d.im||[]).length)return toast('Escribe algo o añade una imagen');const w={id:id(),a:a.id,x:d.x||'',im:d.im||[],t:Date.now(),rp:0,rt:0,lk:0,vw:0,bm:0,ls:[],rs:[]};X_.t.push(w);
 X_.a.forEach(b=>{if(b.id!=a.id&&(b.bell||[]).includes(a.id)){X_.ev.push({to:b.id,k:'tw',f:a.id,w:w.id,t:w.t});xnot(b.id,a.dn,w.x||'📷 Foto',a,{})}});ui.xdk=null;xback();save()},
@@ -582,7 +582,7 @@ edtw:i=>{ui.xm=null;ui.xe=i;ui.xdk=null;xgo('twe')},
 savetw:()=>{const w=X().t.find(z=>z.id==ui.xe),d=ui.xd;if(!w)return;w.a=d.a;w.x=d.x;w.im=d.im;if(d.t)w.t=+new Date(d.t);['rp','rt','lk','vw','bm'].forEach(k=>w[k]=Math.max(0,+d[k]||0));ui.xdk=null;xback();save()},
 deltw:i=>{if(!confirm('¿Eliminar este post?'))return;X().t=X().t.filter(z=>z.id!=i);ui.xm=null;save()},
 cust:i=>{ui.xdk=null;xgo('cust',{xp:i})},popg:(i,p,a)=>{ui.xpop=null;ui.xdk=null;xgo('cust',{xp:a.id})},
-savecu:(i,p,a)=>{const u=xacc(ui.xp)||a,d=ui.xd,un=(d.un||'').trim().replace(/^@/,'');if(!(d.dn||'').trim())return toast('Escribe un nombre');if(!/^\w{1,15}$/.test(un))return toast('Nombre de usuario no válido');if(X().a.some(z=>z!==u&&z.un.toLowerCase()==un.toLowerCase()))return toast('Ese nombre de usuario ya está en uso');
+savecu:(i,p,a)=>{const u=xacc(ui.xp)||a,d=ui.xd,un=(d.un||'').trim().replace(/^@/,'');if(!(d.dn||'').trim())return toast('Escribe un nombre');if(!/^[\w.]{1,15}$/.test(un))return toast('El nombre de usuario solo admite letras, números, _ y . (máx. 15)');if(X().a.some(z=>z!==u&&z.un.toLowerCase()==un.toLowerCase()))return toast('Ese nombre de usuario ya está en uso');
 Object.assign(u,{dn:d.dn.trim(),un,img:d.img||null,hd:d.hd||null,bio:d.bio,loc:d.loc,web:d.web,jn:d.jn?+new Date(d.jn+'T12:00'):u.jn,fo:Math.max(0,+d.fo||0),fg:Math.max(0,+d.fg||0),ver:!!d.ver,priv:!!d.priv});ui.xdk=null;xback();save()},
 fol:(i,p,a)=>{const u=xacc(i);if(!u||u.id==a.id)return;a.fl=a.fl||[];if(a.fl.includes(u.id)){a.fl=a.fl.filter(z=>z!=u.id);u.fo=Math.max(0,(+u.fo||0)-1);a.fg=Math.max(0,(+a.fg||0)-1)}else{a.fl.push(u.id);u.fo=(+u.fo||0)+1;a.fg=(+a.fg||0)+1;X().ev.push({to:u.id,k:'fo',f:a.id,t:Date.now()});xnot(u.id,'Nuevo seguidor',`${a.dn} (@${a.un}) te ha seguido`,a,{})}ui.xm=null;save()},
 bell:(i,p,a)=>{a.bell=a.bell||[];a.bell=a.bell.includes(i)?a.bell.filter(z=>z!=i):[...a.bell,i];save()},
